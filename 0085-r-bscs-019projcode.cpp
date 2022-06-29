@@ -21,13 +21,13 @@ using std::ifstream; using std::ostringstream;
 
 #define INF INT_MAX
 
-int printSolution (int p[], int n);
+int outPutOfAnswer (int p[], int n, string output_filename);
 
 // l[] represents lengths of different words in input sequence. For example,
 // l[] = {3, 2, 2, 5} is for a sentence like "aaa bb cc ddddd".  n is size of
 // l[] and M is line width (maximum no. of characters that can fit in a line)
 
-void solveWordWrap (int l[], int n, int M)
+void solveWordWrap (int l[], int n, int M, string output_filename)
 
 {
   // For simplicity, 1 extra space is used in all below arrays
@@ -89,13 +89,11 @@ void solveWordWrap (int l[], int n, int M)
       }
     }
   }
-  printSolution(p, n);
+  outPutOfAnswer(p, n, output_filename);
 
 }
 
-// for printing the answer where p[] is printing array
-
-int printSolution (int p[], int n)
+int outPutOfAnswer (int p[], int n, string output_filename)
 {
   int k;
   fstream file;
@@ -103,11 +101,6 @@ int printSolution (int p[], int n)
   int word_count = 1;
   string line;
   std::ofstream outfile;
-  time_t t = std::time(0);
-
-  cout << "timetime" << endl;
-  cout << t << endl;
-  cout << "timetime" << endl;
 
   if (p[n] == 1) {
     // printf ("From word no. %d to %d \n", p[n], n);
@@ -123,14 +116,14 @@ int printSolution (int p[], int n)
       word_count++;
     }
 
-    outfile.open("word-wrap-output.txt", std::ios_base::app);
+    outfile.open(output_filename, std::ios_base::app);
     // ofstream WriteToFile("word-wrap-output.txt");
     outfile << line;
     cout << line << endl;
     k = 1;
   }
   else {
-    k = printSolution (p, p[n]-1) + 1;
+    k = outPutOfAnswer (p, p[n]-1, output_filename) + 1;
     // printf ("Line number %d: From word no. %d to %d \n", k, p[n], n);
     file.open("word-wrap-input.txt");
     while(file >> word) {
@@ -161,6 +154,15 @@ int main() {
   fstream file;
   string word;
 
+  // To give output file in a dynamic name.
+  time_t t = std::time(0);
+  stringstream swapholder;
+  swapholder << t;
+  string swaped;
+  swapholder >> swaped;
+  string output_filename;
+  output_filename = swaped.append("word-wrap-output.txt");
+
   std::cout << "**************************************************************" << std::endl;
   std::cout << "     Word Wrap Problem Solution with Dynamic Programming      " << std::endl;
   std::cout << "**************************************************************" << std::endl;
@@ -181,6 +183,6 @@ int main() {
 
   int n = (arr_index)*4;
   int M = 80;
-  solveWordWrap(arr, n, M);
+  solveWordWrap(arr, n, M, output_filename);
   return 0;
 }
